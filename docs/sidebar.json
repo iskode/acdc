@@ -1,6 +1,7 @@
 {
   "acdc": {
     "Overview": "/",
-    "module name here": "/core"
+    "dataprep": "/core",
+    "Title": "/lvquan19_phase_update"
   }
 }

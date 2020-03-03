@@ -10,8 +10,11 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: module name here
+      title: dataprep
       url: /core
+    - output: web,pdf
+      title: Title
+      url: /lvquan19_phase_update
     output: web
     title: acdc
   output: web

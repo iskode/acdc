@@ -2,13 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"MRImage": "00_core.ipynb",
-         "MRImageSegment": "00_core.ipynb",
-         "loadnii": "00_core.ipynb",
-         "open_mri": "00_core.ipynb",
-         "open_mri_mask": "00_core.ipynb",
-         "MRImageList": "00_core.ipynb",
-         "MRImageSegLabelList": "00_core.ipynb"}
+index = {"MRImage": "00_dataprep.ipynb",
+         "MRImageSegment": "00_dataprep.ipynb",
+         "loadnii": "00_dataprep.ipynb",
+         "open_mri": "00_dataprep.ipynb",
+         "open_mri_mask": "00_dataprep.ipynb",
+         "MRImageList": "00_dataprep.ipynb",
+         "MRImageSegLabelList": "00_dataprep.ipynb"}
 
 modules = ["dataprep.py"]
 

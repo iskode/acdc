@@ -11,7 +11,7 @@ entries:
       url: /
     - output: web,pdf
       title: dataprep
-      url: /core
+      url: /dataprep
     - output: web,pdf
       title: Title
       url: /lvquan19_phase_update

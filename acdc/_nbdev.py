@@ -11,9 +11,14 @@ index = {"resize_slices": "00_dataprep.ipynb",
          "open_mri_mask": "00_dataprep.ipynb",
          "MRImageList": "00_dataprep.ipynb",
          "MRImageSegLabelList": "00_dataprep.ipynb",
-         "MRISegItemList": "00_dataprep.ipynb"}
+         "MRISegItemList": "00_dataprep.ipynb",
+         "to_images": "01_model.ipynb",
+         "to_mri": "01_model.ipynb",
+         "MyDynamicUnet": "01_model.ipynb",
+         "unet4mri_learner": "01_model.ipynb"}
 
-modules = ["dataprep.py"]
+modules = ["dataprep.py",
+           "model.py"]
 
 doc_url = "https://iskode.github.io/acdc/"
 

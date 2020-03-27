@@ -21,7 +21,7 @@ def resize_slices(n, slices):
     diff = len(slices) - n
     sl = []
     if diff>0:
-        start = np.random.randint(0, diff)
+        start = 0 #np.random.randint(0, diff)
         sl = [slices[i] for i in range(start, start+n)]
     else:
         sl = slices + [slices[i] for i in range(-diff)]
@@ -37,6 +37,7 @@ def apply_trans(tfms, slices, slicewise, cls=(None, None), **kwargs):
         slices = resize_slices(size[0], slices)
         kwargs['size'] = size[1:]
     if slicewise: # this case creates mismatch between slices and their labels!
+        print(f'"slicewise = True" creates mismatch between slices and their labels!')
         x = cls[0]([cls[1](s).apply_tfms(tfms, **kwargs).data for s in slices])
     else:
         if len(tfms[0].resolved) == 0: _resolve_tfms(tfms)
@@ -56,7 +57,7 @@ class MRImage(ItemBase):
     @property
     def shape(self)->Tuple[int,int,int,int]: return tuple([*self.data.shape])
     @property
-    def size(self)->Tuple[int,int]: return (self.shape[0], self.shape[-2:])
+    def size(self)->Tuple[int,int]: return tuple(self.shape[-2:])
     @property
     def device(self)->torch.device: return self.data.device
 
@@ -76,10 +77,9 @@ class MRImage(ItemBase):
         cmap = ifnone(cmap, defaults.cmap)
         assert min(slice_idxs) >=0 and max(slice_idxs) <= self.shape[0]
         slices = [self.slices[i] for i in slice_idxs]
-        if axs is None:
-            cols = len(slices)
-            fig,axs = plt.subplots(1, cols, figsize=figsize)
-
+        cols = len(slices)
+        fig,axs = plt.subplots(1, cols, figsize=figsize)
+        if cols == 1: axs = [axs]
         assert len(axs) == len(slices)
         if y:
             yy = [y.slices[i] for i in slice_idxs]
@@ -106,10 +106,9 @@ class MRImageSegment(MRImage):
         cmap = ifnone(cmap, defaults.cmap)
         assert min(slice_idxs) >=0 and max(slice_idxs) <= self.shape[0]
         slices = [self.slices[i] for i in slice_idxs]
-        if axs is None:
-            cols = len(slices)
-            fig,axs = plt.subplots(1, cols, figsize=figsize)
-
+        cols = len(slices)
+        fig,axs = plt.subplots(1, cols, figsize=figsize)
+        if cols == 1: axs = [axs]
         assert len(axs) == len(slices)
         for x,ax in zip(slices, axs):
             ImageSegment(x).show(ax=ax, **kwargs)
@@ -159,16 +158,9 @@ class MRImageList(ImageList):
         "Show `xs` (inputs), `ys` (targets) and `zs` (predictions) on a figure of `figsize`."
         if self._square_show_res:
             raise Exception('Case not handle yet !')
-#             title = 'Ground truth\nPredictions'
-#             rows, cols = len(xs), len(slice_idxs)
-#             print(cols)
-#             axs = subplots(rows, cols, imgsize=imgsize, figsize=figsize, title=title, weight='bold', size=12)
-#             for x,y,z,ax in zip(xs,ys,zs,axs.flatten()):
-#                 x.show(ax=ax, title=f'{str(y)}\n{str(z)}', **kwargs)
-#             for ax in axs.flatten()[len(xs):]: ax.axis('off')
         else:
             title = 'Ground truth/Predictions'
-            for (x,y,z) in enumerate(zip(xs,ys,zs)):
+            for x,y,z in zip(xs,ys,zs):
                 x.show(y=y, slice_idxs=slice_idxs, **kwargs)
                 x.show(y=z, slice_idxs=slice_idxs, **kwargs)
 
@@ -182,13 +174,9 @@ class MRImageSegLabelList(MRImageList):
     # Custom label: mask opener
     def open(self, fn): return open_mri(fn, div=False, convert_mode='L', cls=MRImageSegment)
 
-    def analyze_pred(self, pred, thresh:float=0.5):
-        return pred.argmax(dim=1)[None]
-        # .permute(1,0,2,3)
+    def analyze_pred(self, pred): return pred.argmax(dim=1, keepdim=True)
 
-    def reconstruct(self, t:Tensor):
-#         print('LabelList tensor:',t.shape)
-        return MRImageSegment(t)
+    def reconstruct(self, t:Tensor): return MRImageSegment(t)
 
 class MRISegItemList(MRImageList):
     "`ItemList` suitable for segmentation tasks."
